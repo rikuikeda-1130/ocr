@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>OptiMax OCR</title>
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+       background:#f5f6f8;color:#131a26;
+       font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+  .box{text-align:center;padding:24px;max-width:520px}
+  .t{font-size:15px;color:#5c6779;margin-bottom:14px}
+  a{color:#2c63cf;font-size:14px;word-break:break-all}
+  .err{display:none;font-size:14px;line-height:1.9;color:#131a26}
+  .err b{display:block;font-size:16px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="t" id="msg">OptiMax OCR に接続しています…</div>
+  <a id="manual" href="#" style="display:none">手動で開く</a>
+  <div class="err" id="err">
+    <b>ただいま接続できません</b>
+    OCRサーバーが起動していない可能性があります。<br>
+    担当者にご連絡ください。
+  </div>
+</div>
+<script>
+(function () {
+  // url.json はトンネルが張り直されるたびに書き換わる。
+  // GitHub Pages の CDN キャッシュを避けるため、毎回クエリを変えて取得する。
+  fetch('url.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d.url) throw new Error('no url');
+      var m = document.getElementById('manual');
+      m.href = d.url;
+      m.textContent = d.url;
+      m.style.display = 'inline';
+      location.replace(d.url);
+    })
+    .catch(function () {
+      document.getElementById('msg').style.display = 'none';
+      document.getElementById('err').style.display = 'block';
+    });
+})();
+</script>
+</body>
+</html>
